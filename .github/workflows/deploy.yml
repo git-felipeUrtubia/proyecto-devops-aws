@@ -24,7 +24,22 @@ jobs:
             sudo systemctl start httpd
             sudo systemctl enable httpd
             
-            # Limpiar carpeta web y clonar
-            sudo rm -rf /var/www/html/*
+            # Cambiar permisos para que podamos trabajar en la carpeta
+            sudo chown -R ec2-user:ec2-user /var/www/html
+            
+            # Lógica de despliegue
+            if [ ! -d "/var/www/html/.git" ]; then
+                echo "📁 Carpeta nueva, clonando por primera vez..."
+                sudo rm -rf /var/www/html/*
+                sudo git clone https://github.com/git-felipeUrtubia/proyecto-devops-aws.git /var/www/html
+            else
+                echo "🔄 El proyecto ya existe, actualizando código..."
+                cd /var/www/html
+                git fetch origin
+                git reset --hard origin/main
+            fi
+            
+            echo "✅ ¡Web actualizada con éxito!"
+
             # Usaremos tu nombre de usuario de GitHub aquí
             sudo git clone https://github.com/git-felipeUrtubia/proyecto-devops-aws.git /var/www/html/
