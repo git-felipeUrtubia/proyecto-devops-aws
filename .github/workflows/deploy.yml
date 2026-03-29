@@ -1,0 +1,30 @@
+name: Deploy Apache EC2
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Deploy a EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "🚀 Deploy iniciado"
+            # Actualizar e instalar Apache si no está
+            sudo yum update -y
+            sudo yum install -y httpd
+            sudo systemctl start httpd
+            sudo systemctl enable httpd
+            
+            # Limpiar carpeta web y clonar
+            sudo rm -rf /var/www/html/*
+            # Usaremos tu nombre de usuario de GitHub aquí
+            sudo git clone https://github.com/git-felipeUrtubia/proyecto-devops-aws.git /var/www/html/
