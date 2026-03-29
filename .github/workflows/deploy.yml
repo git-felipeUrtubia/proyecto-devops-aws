@@ -20,7 +20,7 @@ jobs:
             echo "🚀 Deploy iniciado"
             # Actualizar e instalar Apache si no está
             sudo yum update -y
-            sudo yum install -y httpd
+            sudo yum install -y httpd git
             sudo systemctl start httpd
             sudo systemctl enable httpd
             
